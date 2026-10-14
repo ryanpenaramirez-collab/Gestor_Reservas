@@ -78,11 +78,9 @@ export const Navbar: React.FC = () => {
 
               {currentUser && (
                 <div className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-slate-800/70 border border-slate-700/70">
-                  <img
-                    src={currentUser.avatar}
-                    alt={currentUser.name}
-                    className="w-8 h-8 rounded-full object-cover ring-2 ring-teal-500/30"
-                  />
+                  <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center ring-2 ring-teal-500/30">
+                    <UserIcon className="w-4 h-4 text-slate-300" />
+                  </div>
                   <div className="hidden sm:block">
                     <div className="text-xs font-semibold text-white">{currentUser.name}</div>
                     <div>{getRoleBadge(currentUser.role)}</div>

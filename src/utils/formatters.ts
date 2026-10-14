@@ -1,11 +1,11 @@
 import { ReservationStatus, RoomStatus, UserRole } from '../types';
 
 export const formatCurrency = (amount: number): string => {
-  return new Intl.NumberFormat('es-ES', {
+  return new Intl.NumberFormat('es-CO', {
     style: 'currency',
-    currency: 'USD',
+    currency: 'COP',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
+    maximumFractionDigits: 0,
   }).format(amount);
 };
 

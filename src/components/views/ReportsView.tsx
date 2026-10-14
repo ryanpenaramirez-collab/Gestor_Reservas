@@ -185,7 +185,7 @@ export const ReportsView: React.FC = () => {
               <h3 className="text-sm font-bold text-slate-900">
                 Evolución de Ingresos Mensuales
               </h3>
-              <p className="text-xs text-slate-500">Monto total facturado en USD</p>
+              <p className="text-xs text-slate-500">Monto total facturado</p>
             </div>
             <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-1 rounded-full border border-teal-200">
               Total: {formatCurrency(monthlyData.reduce((s, m) => s + m.revenue, 0))}

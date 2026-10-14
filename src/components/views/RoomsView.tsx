@@ -319,7 +319,7 @@ export const RoomsView: React.FC = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
-                    Tarifa por Noche ($ USD) *
+                    Tarifa por Noche ($) *
                   </label>
                   <div className="relative">
                     <span className="absolute left-3 top-2 text-slate-400 font-bold">$</span>

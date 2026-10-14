@@ -99,7 +99,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ reservationId, onClo
           {/* Amount Input */}
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1">
-              Monto a Registrar ($ USD) *
+              Monto a Registrar ($) *
             </label>
             <div className="relative">
               <span className="absolute left-3 top-2.5 text-slate-400 font-bold">$</span>
