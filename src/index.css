@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+}
+
+/* Print specific styles for Comprobante de Reserva / Factura */
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+  }
+  header, nav, button, .print\:hidden {
+    display: none !important;
+  }
+  #hotel-voucher-printable {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    border: none !important;
+  }
+}

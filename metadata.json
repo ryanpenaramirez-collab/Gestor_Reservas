@@ -1,0 +1,7 @@
+{
+  "name": "GestorReservas",
+  "description": "GestorReservas: Sistema de gestión y reservas para hoteles pequeños con control de habitaciones, huéspedes, check-in, check-out, pagos y reportes.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
+
