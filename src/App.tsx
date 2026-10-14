@@ -9,6 +9,7 @@ import { Navbar } from './components/Navbar';
 import { Navigation } from './components/Navigation';
 import { NotificationToast } from './components/NotificationToast';
 import { VoucherModal } from './components/VoucherModal';
+import { AuthScreen } from './components/AuthScreen';
 import { DashboardView } from './components/views/DashboardView';
 import { AvailabilitySearch } from './components/views/AvailabilitySearch';
 import { ReservationsView } from './components/views/ReservationsView';
@@ -113,10 +114,25 @@ const HotelAppContent: React.FC = () => {
   );
 };
 
+const AppGate: React.FC = () => {
+  const { currentUser } = useHotel();
+
+  if (!currentUser) {
+    return (
+      <>
+        <AuthScreen />
+        <NotificationToast />
+      </>
+    );
+  }
+
+  return <HotelAppContent />;
+};
+
 export default function App() {
   return (
     <HotelProvider>
-      <HotelAppContent />
+      <AppGate />
     </HotelProvider>
   );
 }

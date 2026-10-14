@@ -38,9 +38,16 @@ interface HotelContextType {
   setVoucherReservationId: (id: string | null) => void;
   
   // Auth methods
-  login: (userId: string) => boolean;
+  login: (email: string, password: string) => { success: boolean; message: string };
+  loginAs: (userId: string) => boolean;
+  register: (data: {
+    name: string;
+    email: string;
+    documentNumber: string;
+    phone: string;
+    password: string;
+  }) => { success: boolean; message: string };
   logout: () => void;
-  switchRole: (role: UserRole) => void;
   
   // Availability & Calculation
   calculateNights: (checkIn: string, checkOut: string) => number;
@@ -117,7 +124,8 @@ interface HotelContextType {
 const HotelContext = createContext<HotelContextType | undefined>(undefined);
 
 const STORAGE_KEYS = {
-  CURRENT_USER: 'gestorreservas_current_user_v1',
+  CURRENT_USER: 'gestorreservas_current_user_v2',
+  USERS: 'gestorreservas_users_v2',
   ROOMS: 'gestorreservas_rooms_v1',
   GUESTS: 'gestorreservas_guests_v1',
   RESERVATIONS: 'gestorreservas_reservations_v1',
@@ -129,8 +137,18 @@ const getSaved = (key: string, legacyKey?: string) => {
 };
 
 export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [users, setUsers] = useState<User[]>(() => {
+    const saved = getSaved(STORAGE_KEYS.USERS, 'gestorreservas_users_v1');
+    if (saved) {
+      try {
+        return JSON.parse(saved);
+      } catch (e) {}
+    }
+    return INITIAL_USERS;
+  });
+
   const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = getSaved(STORAGE_KEYS.CURRENT_USER, 'hotelgest_current_user_v1');
+    const saved = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
     if (saved) {
       try {
         return JSON.parse(saved);
@@ -138,8 +156,8 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         // fallback
       }
     }
-    // Default logged in as Receptionist for immediate operational dashboard view, or Admin
-    return INITIAL_USERS[1]; // Laura Gómez (Recepcionista)
+    // No active session: the user must authenticate in the login screen.
+    return null;
   });
 
   const [rooms, setRooms] = useState<Room[]>(() => {
@@ -201,6 +219,10 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [currentUser]);
 
   useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+  }, [users]);
+
+  useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.ROOMS, JSON.stringify(rooms));
   }, [rooms]);
 
@@ -231,38 +253,97 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     }, 4500);
   };
 
-  const login = (userId: string): boolean => {
-    const user = INITIAL_USERS.find((u) => u.id === userId);
-    if (user) {
-      setCurrentUser(user);
-      if (user.role === 'guest') {
-        setActiveTab('my-reservations');
-      } else {
-        setActiveTab('dashboard');
-      }
-      showNotification(`Sesión iniciada como ${user.name} (${formatRole(user.role)})`, 'success');
-      return true;
+  const applySession = (user: User) => {
+    setCurrentUser(user);
+    setActiveTab(user.role === 'guest' ? 'my-reservations' : 'dashboard');
+  };
+
+  const login = (email: string, password: string) => {
+    const normalized = email.trim().toLowerCase();
+    const user = users.find((u) => u.email.toLowerCase() === normalized);
+    if (!user) {
+      const message = 'No existe una cuenta con ese correo. Regístrate para continuar.';
+      showNotification(message, 'error');
+      return { success: false, message };
     }
-    showNotification('Usuario no encontrado', 'error');
-    return false;
+    if (user.password !== password) {
+      const message = 'La contraseña es incorrecta.';
+      showNotification(message, 'error');
+      return { success: false, message };
+    }
+    applySession(user);
+    showNotification(`¡Bienvenido/a, ${user.name}!`, 'success');
+    return { success: true, message: 'Sesión iniciada.' };
+  };
+
+  const loginAs = (userId: string): boolean => {
+    const user = users.find((u) => u.id === userId);
+    if (!user) {
+      showNotification('Cuenta de acceso rápido no disponible.', 'error');
+      return false;
+    }
+    applySession(user);
+    showNotification(`Sesión iniciada como ${user.name} (${formatRole(user.role)})`, 'success');
+    return true;
+  };
+
+  const register = (data: {
+    name: string;
+    email: string;
+    documentNumber: string;
+    phone: string;
+    password: string;
+  }) => {
+    const name = data.name.trim();
+    const email = data.email.trim().toLowerCase();
+    const documentNumber = data.documentNumber.trim();
+    const phone = data.phone.trim();
+    const password = data.password;
+
+    if (users.some((u) => u.email.toLowerCase() === email)) {
+      const message = 'Ya existe una cuenta registrada con ese correo.';
+      showNotification(message, 'error');
+      return { success: false, message };
+    }
+    if (guests.some((g) => g.documentNumber.trim().toLowerCase() === documentNumber.toLowerCase())) {
+      const message = 'Ya existe un huésped registrado con ese documento.';
+      showNotification(message, 'error');
+      return { success: false, message };
+    }
+
+    const newGuest: Guest = {
+      id: `guest-${Date.now().toString().slice(-5)}`,
+      fullName: name,
+      documentType: 'Cédula',
+      documentNumber,
+      email,
+      phone,
+      nationality: 'No especificada',
+      createdAt: new Date().toISOString().split('T')[0],
+    };
+
+    const newUser: User = {
+      id: `user-${Date.now().toString().slice(-5)}`,
+      name,
+      email,
+      role: 'guest',
+      password,
+      phone,
+      documentNumber,
+      guestId: newGuest.id,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0d9488&color=fff&size=150`,
+    };
+
+    setGuests((prev) => [newGuest, ...prev]);
+    setUsers((prev) => [...prev, newUser]);
+    applySession(newUser);
+    showNotification(`Cuenta creada con éxito. ¡Bienvenido/a, ${name}!`, 'success');
+    return { success: true, message: 'Registro exitoso.' };
   };
 
   const logout = () => {
     setCurrentUser(null);
     showNotification('Has cerrado sesión correctamente', 'info');
-  };
-
-  const switchRole = (role: UserRole) => {
-    const targetUser = INITIAL_USERS.find((u) => u.role === role);
-    if (targetUser) {
-      setCurrentUser(targetUser);
-      if (role === 'guest') {
-        setActiveTab('my-reservations');
-      } else {
-        setActiveTab('dashboard');
-      }
-      showNotification(`Rol cambiado a: ${formatRole(role)} (${targetUser.name})`, 'info');
-    }
   };
 
   const formatRole = (role: UserRole): string => {
@@ -823,7 +904,7 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     <HotelContext.Provider
       value={{
         currentUser,
-        users: INITIAL_USERS,
+        users,
         rooms,
         guests,
         reservations,
@@ -835,8 +916,9 @@ export const HotelProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         voucherReservationId,
         setVoucherReservationId,
         login,
+        loginAs,
+        register,
         logout,
-        switchRole,
         calculateNights,
         isRoomAvailable,
         getAvailableRooms,

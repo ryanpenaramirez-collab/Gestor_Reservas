@@ -6,16 +6,12 @@ import {
   User as UserIcon,
   ShieldCheck,
   UserCheck,
-  ChevronDown,
-  Layers,
-  Sparkles,
+  LogOut,
 } from 'lucide-react';
-import { LoginModal } from './LoginModal';
 import { UserRole } from '../types';
 
 export const Navbar: React.FC = () => {
-  const { currentUser, switchRole, resetToDemoData } = useHotel();
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const { currentUser, logout, resetToDemoData } = useHotel();
   const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const getRoleBadge = (role: UserRole) => {
@@ -69,45 +65,7 @@ export const Navbar: React.FC = () => {
               </div>
             </div>
 
-            {/* Quick Role Switcher Bar */}
-            <div className="hidden md:flex items-center gap-1 bg-slate-800/80 p-1 rounded-xl border border-slate-700/60">
-              <span className="text-[11px] font-medium text-slate-400 px-2 flex items-center gap-1">
-                <Layers className="w-3 h-3 text-teal-400" />
-                Rol:
-              </span>
-              <button
-                onClick={() => switchRole('guest')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  currentUser?.role === 'guest'
-                    ? 'bg-sky-600 text-white shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-                }`}
-              >
-                Huésped
-              </button>
-              <button
-                onClick={() => switchRole('receptionist')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  currentUser?.role === 'receptionist'
-                    ? 'bg-teal-600 text-white shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-                }`}
-              >
-                Recepcionista
-              </button>
-              <button
-                onClick={() => switchRole('admin')}
-                className={`text-xs px-3 py-1.5 rounded-lg font-medium transition-all ${
-                  currentUser?.role === 'admin'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-300 hover:text-white hover:bg-slate-700/50'
-                }`}
-              >
-                Administrador
-              </button>
-            </div>
-
-            {/* Right actions: Demo Reset & Profile Button */}
+            {/* Right actions: Demo Reset, Profile & Logout */}
             <div className="flex items-center gap-2.5">
               <button
                 onClick={() => setShowResetConfirm(true)}
@@ -119,26 +77,27 @@ export const Navbar: React.FC = () => {
               </button>
 
               {currentUser && (
-                <button
-                  onClick={() => setIsLoginModalOpen(true)}
-                  className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-slate-800/70 hover:bg-slate-800 border border-slate-700/70 transition-all text-left group"
-                >
+                <div className="flex items-center gap-2.5 p-1.5 sm:px-3 sm:py-1.5 rounded-xl bg-slate-800/70 border border-slate-700/70">
                   <img
                     src={currentUser.avatar}
                     alt={currentUser.name}
                     className="w-8 h-8 rounded-full object-cover ring-2 ring-teal-500/30"
                   />
                   <div className="hidden sm:block">
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-xs font-semibold text-white group-hover:text-teal-300 transition-colors">
-                        {currentUser.name}
-                      </span>
-                      <ChevronDown className="w-3 h-3 text-slate-400 group-hover:text-slate-200 transition-transform group-hover:translate-y-0.5" />
-                    </div>
+                    <div className="text-xs font-semibold text-white">{currentUser.name}</div>
                     <div>{getRoleBadge(currentUser.role)}</div>
                   </div>
-                </button>
+                </div>
               )}
+
+              <button
+                onClick={logout}
+                title="Cerrar sesión"
+                className="flex items-center gap-1.5 text-xs font-semibold text-slate-200 hover:text-white bg-slate-800/60 hover:bg-rose-600/90 border border-slate-700/60 hover:border-rose-500/50 px-3 py-2 rounded-lg transition-colors"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Cerrar sesión</span>
+              </button>
             </div>
           </div>
         </div>
@@ -179,12 +138,6 @@ export const Navbar: React.FC = () => {
           </div>
         </div>
       )}
-
-      {/* Login / Change Role Modal */}
-      <LoginModal
-        isOpen={isLoginModalOpen}
-        onClose={() => setIsLoginModalOpen(false)}
-      />
     </>
   );
 };
