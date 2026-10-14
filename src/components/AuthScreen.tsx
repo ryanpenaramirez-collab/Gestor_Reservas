@@ -70,51 +70,16 @@ export const AuthScreen: React.FC = () => {
   return (
     <div className="min-h-screen grid lg:grid-cols-2 bg-slate-50">
       {/* Branding panel */}
-      <div className="relative hidden lg:flex flex-col justify-between bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 text-white p-12 overflow-hidden">
+      <div className="relative hidden lg:flex flex-col items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-teal-950 text-white p-12 overflow-hidden">
         <div className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-teal-500/10 blur-3xl" />
         <div className="absolute -bottom-32 -left-16 w-96 h-96 rounded-full bg-indigo-500/10 blur-3xl" />
 
-        <div className="relative flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-tr from-teal-500 to-teal-400 flex items-center justify-center shadow-lg shadow-teal-500/20">
-            <Hotel className="w-6 h-6 text-slate-950" />
+        <div className="relative flex flex-col items-center gap-5 text-center">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-tr from-teal-500 to-teal-400 flex items-center justify-center shadow-xl shadow-teal-500/20">
+            <Hotel className="w-10 h-10 text-slate-950" />
           </div>
-          <div>
-            <p className="text-xl font-extrabold tracking-tight">GestorReservas</p>
-            <p className="text-[11px] text-slate-400">Sistema de gestión hotelera</p>
-          </div>
+          <p className="text-5xl font-extrabold tracking-tight">GestorReservas</p>
         </div>
-
-        <div className="relative max-w-md">
-          <h1 className="text-4xl font-extrabold leading-tight tracking-tight">
-            Gestiona tu hotel pequeño de forma{' '}
-            <span className="bg-gradient-to-r from-teal-300 to-emerald-300 bg-clip-text text-transparent">
-              simple y completa
-            </span>
-          </h1>
-          <p className="mt-4 text-sm text-slate-300 leading-relaxed">
-            Habitaciones, huéspedes, check-in, check-out, pagos y reportes en un solo lugar.
-            Administra cada operación del día a día desde cualquier dispositivo.
-          </p>
-
-          <ul className="mt-8 space-y-3 text-sm text-slate-300">
-            <li className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              Control de ocupación y disponibilidad en tiempo real
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              Registro de huéspedes y cobros por reserva
-            </li>
-            <li className="flex items-center gap-3">
-              <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />
-              Reportes gráficos de ingresos y ocupación
-            </li>
-          </ul>
-        </div>
-
-        <p className="relative text-[11px] text-slate-500">
-          © {new Date().getFullYear()} GestorReservas. Todos los derechos reservados.
-        </p>
       </div>
 
       {/* Auth form panel */}
