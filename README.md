@@ -7,8 +7,6 @@ Primera entrega: análisis, modelado y gestión del proyecto.
 
 - Ryan Peña Ramirez
 
-Docente: [Nombre del docente]
-
 ## Descripción
 
 GestorReservas es un sistema web para gestionar las reservas de un hotel pequeño o mediano. Reúne habitaciones, huéspedes, reservas y pagos en un solo lugar, con la disponibilidad siempre al día, para dejar atrás los cuadernos y las hojas de cálculo. Todo se hace desde la página; las confirmaciones y avisos al huésped se envían por mensaje de texto o correo electrónico.
