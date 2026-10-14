@@ -1,3 +1,7 @@
+packages:
+  - frontend
+  # - backend  # descomentar cuando se cree el paquete backend
+
 allowBuilds:
   '@google/genai': true
   esbuild: true

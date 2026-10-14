@@ -48,6 +48,38 @@ El sistema se organiza en **tres capas**. Cada capa solo se comunica con la que 
 
 Las tecnologías son una propuesta de diseño: en esta primera entrega no se programa el sistema.
 
+## Estructura del repositorio
+
+El repositorio está organizado por capas para facilitar la incorporación futura del
+backend y la base de datos. Por ahora solo el **frontend** contiene código implementado.
+
+```
+Gestor_Reservas/
+├── frontend/   # Presentación (React + Vite + TypeScript)  -> implementado
+├── backend/    # Lógica de negocio (Node + Express)         -> pendiente
+├── database/   # Datos (Prisma + SQL)                       -> pendiente
+├── shared/     # Tipos y utilidades compartidas             -> pendiente
+├── package.json          # Scripts raíz del workspace
+├── pnpm-workspace.yaml   # Definición del workspace
+├── metadata.json
+├── .env.example
+└── README.md
+```
+
+### Paquetes y comandos
+
+El proyecto usa un *workspace* de pnpm. Los comandos se pueden ejecutar desde la raíz:
+
+```bash
+pnpm install          # instala dependencias del workspace
+pnpm dev              # inicia el frontend
+pnpm build            # compila el frontend
+pnpm lint             # verifica tipos (tsc)
+
+# Equivalente ejecutando dentro de frontend/
+cd frontend && pnpm dev
+```
+
 ## Modelado
 
 - **Casos de uso:** 9 casos de uso para los tres tipos de usuario.
